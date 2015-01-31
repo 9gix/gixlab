@@ -28,7 +28,7 @@ Object:
 
 
 
-var snowflake_count = 2000;
+var snowflake_count = 10000;
 
 
 function Snowflake(x, y){
@@ -72,7 +72,7 @@ var Snow = (function(){
 
 	
 	// increasing the fps may cause the old snow coordinate missed from being clear.
-	var fps = 25; 
+	var fps = 20; 
 	var interval = 1000 / fps;
 
 	document.addEventListener("DOMContentLoaded", function(event){
