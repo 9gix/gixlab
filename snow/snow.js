@@ -28,7 +28,7 @@ Object:
 
 
 
-var snowflake_count = 10000;
+var snowflake_count = 15000;
 
 
 function Snowflake(x, y){
