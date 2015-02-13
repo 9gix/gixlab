@@ -136,9 +136,10 @@ var Snow = (function(){
 		var lineHeight = parseInt(getURLParameter("line-height")) || getLineHeight();
 		var font = getURLParameter("font") || getFont();
 		ctx.font = font;
-		fillTextMultiLine(ctx, message, canvas.width * 0.2, canvas.height * 0.1, canvas.width - canvas.width * 0.4, lineHeight);
+		fillTextMultiLine(ctx, message, canvas.width * 0.2, canvas.height * 0.20, canvas.width - canvas.width * 0.4, lineHeight);
 		var from = getURLParameter("from") || "Eugene";
-		ctx.fillText("~ " + from, canvas.width - canvas.width * 0.4, canvas.height - 50);
+		ctx.fillStyle = 'pink';
+		ctx.fillText("~ " + from, canvas.width - canvas.width * 0.5, canvas.height - 50);
 		canvasData = ctx.getImageData(0, 0, canvas.width, canvas.height);
 	};
 
@@ -241,14 +242,14 @@ var Snow = (function(){
     // Modified from http://stackoverflow.com/a/22948632/764592
     function getFont() {
 	    var ratio = fontSize / fontBase;
-	    var size = canvas.width * ratio;
+	    var size = (0.5 * canvas.height + 0.5 * canvas.width) * ratio;
 	    
 	    return (size|0) + 'px Papyrus, Brush Script MT, Courier New';
 	}
 
 	function getLineHeight(){
 		var ratio = lineHeight / lineBase;
-		var size = canvas.height * ratio;
+		var size = (0.5 * canvas.height + 0.5 * canvas.width ) * ratio;
 		return size;
 	}
 
