@@ -28,7 +28,7 @@ Object:
 
 
 
-var snowflake_count = 15000;
+var snowflake_count = 999;
 
 
 function Snowflake(x, y){
@@ -72,7 +72,7 @@ var Snow = (function(){
 
 	
 	// increasing the fps may cause the old snow coordinate missed from being clear.
-	var fps = 20; 
+	var fps = 120; 
 	var interval = 1000 / fps;
 
 	document.addEventListener("DOMContentLoaded", function(event){
@@ -86,7 +86,7 @@ var Snow = (function(){
 		initSnow();
 		initObject();
 		snowLoop();
-		renderSnow();
+		
 	};
 
 	var drawPixel = function(x, y, r, g, b, a){
@@ -123,15 +123,18 @@ var Snow = (function(){
 			drawSnowflake(snowflake.x, snowflake.y);
 		}
 		updateCanvas();
-		window.requestAnimationFrame(renderSnow);
 	};
 
 	var initObject = function(){
 		ctx.fillStyle = 'white';
-		ctx.font = '144px Papyrus, Brush Script MT, Courier New';
-		ctx.fillText("Gix Snow", 50, 200);
-		ctx.font = '72px Brush Script MT, Papyrus, Courier New';
-		ctx.fillText("by Eugene", 150, 300);
+		var message = getURLParameter("message") || "Looking for the meaning of Life under the snow?";
+		console.log(message);
+		var lineHeight = parseInt(getURLParameter("line-height")) || 90;
+		var font = getURLParameter("font") || '72px Papyrus, Brush Script MT, Courier New';
+		ctx.font = font;
+		fillTextMultiLine(ctx, message, canvas.width * 0.2, canvas.height * 0.2, canvas.width - canvas.width * 0.4, lineHeight);
+		var from = getURLParameter("from") || "Eugene";
+		ctx.fillText("~ " + from, canvas.width - 400, canvas.height - 50);
 		canvasData = ctx.getImageData(0, 0, canvas.width, canvas.height);
 	};
 
@@ -191,9 +194,44 @@ var Snow = (function(){
 				}
 			}
 		}
-
+		renderSnow();
 		setTimeout(snowLoop, interval)
 	};
 
+	// Modified from: http://stackoverflow.com/a/21574562/764592
+	function fillTextMultiLine(ctx, text, x, y, maxWidth, lineHeight) {
+		var lines = text.split(/\\n/);
+		for (var i = 0; i < lines.length; ++i) {
+			y = wrapText(ctx, lines[i], x, y, maxWidth, lineHeight);
+			y += lineHeight;
+		}
+	}
+
+	// Modified from: http://stackoverflow.com/a/11582513/764592
+	function getURLParameter(name) {
+	    return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search)||[,""])[1].replace(/\+/g, '%20'))||null
+	}
+
+	// Modified from: http://www.html5canvastutorials.com/tutorials/html5-canvas-wrap-text-tutorial/
+	function wrapText(context, text, x, y, maxWidth, lineHeight) {
+        var words = text.split(' ');
+        var line = '';
+
+		for(var n = 0; n < words.length; n++) {
+			var testLine = line + words[n] + ' ';
+			var metrics = context.measureText(testLine);
+			var testWidth = metrics.width;
+			if (testWidth > maxWidth && n > 0) {
+				context.fillText(line, x, y);
+				line = words[n] + ' ';
+				y += lineHeight;
+			}
+			else {
+				line = testLine;
+			}
+        }
+        context.fillText(line, x, y);
+        return y;
+    }
 	return {};
 })();
