@@ -58,7 +58,11 @@ var Snow = (function(){
 	var canvas = document.getElementById('snow-canvas');
 	var ctx = canvas.getContext('2d');
 	var canvasData;
-
+	var fontBase = 1000;
+	var fontSize = 70;
+	var lineBase = 800;
+	var lineHeight = 100;
+	var ratio;
 
 	var resizeCanvas = function(){
 		canvas.width  = window.innerWidth;
@@ -129,12 +133,12 @@ var Snow = (function(){
 		ctx.fillStyle = 'white';
 		var message = getURLParameter("message") || "Looking for the meaning of Life under the snow?";
 		console.log(message);
-		var lineHeight = parseInt(getURLParameter("line-height")) || 90;
-		var font = getURLParameter("font") || '72px Papyrus, Brush Script MT, Courier New';
+		var lineHeight = parseInt(getURLParameter("line-height")) || getLineHeight();
+		var font = getURLParameter("font") || getFont();
 		ctx.font = font;
-		fillTextMultiLine(ctx, message, canvas.width * 0.2, canvas.height * 0.2, canvas.width - canvas.width * 0.4, lineHeight);
+		fillTextMultiLine(ctx, message, canvas.width * 0.2, canvas.height * 0.1, canvas.width - canvas.width * 0.4, lineHeight);
 		var from = getURLParameter("from") || "Eugene";
-		ctx.fillText("~ " + from, canvas.width - 400, canvas.height - 50);
+		ctx.fillText("~ " + from, canvas.width - canvas.width * 0.4, canvas.height - 50);
 		canvasData = ctx.getImageData(0, 0, canvas.width, canvas.height);
 	};
 
@@ -233,5 +237,20 @@ var Snow = (function(){
         context.fillText(line, x, y);
         return y;
     }
+
+    // Modified from http://stackoverflow.com/a/22948632/764592
+    function getFont() {
+	    var ratio = fontSize / fontBase;
+	    var size = canvas.width * ratio;
+	    
+	    return (size|0) + 'px Papyrus, Brush Script MT, Courier New';
+	}
+
+	function getLineHeight(){
+		var ratio = lineHeight / lineBase;
+		var size = canvas.height * ratio;
+		return size;
+	}
+
 	return {};
 })();
