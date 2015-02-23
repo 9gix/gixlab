@@ -13,6 +13,10 @@ var Texmap = (function(){
         group = null,
         orbitControls = null,
         texture = null;
+
+    var cylinder_geometry = null,
+        cylinder_mesh = null;
+
     var textureCanvas = null;
     var duration = 5000;
     var currentTime = Date.now();
@@ -24,9 +28,7 @@ var Texmap = (function(){
         currentTime = now;
         var fract = deltat / duration;
         var angle = Math.PI * 2 * fract;
-        group.rotation.x += angle / 19;
-        group.rotation.y += angle / 17;
-        group.rotation.z += angle / 18;
+        group.rotation.y += angle;
     }
 
     function run(){
@@ -57,13 +59,38 @@ var Texmap = (function(){
 
         
         camera = new THREE.PerspectiveCamera(45, canvas.width / canvas.height, 1, 4000);
-        camera.position.set(0,0,5);
+        camera.position.set(0,10,10);
         scene.add(camera);
 
 
+        
+        cylinder_geometry = new THREE.CylinderGeometry(1,1,4,32);
+        cylinder_mesh = new THREE.Mesh(cylinder_geometry, 
+            new THREE.MeshBasicMaterial({
+                color: 0x00ffff,
+                wireframe: true,
+            })); 
+        cylinder_mesh.position.y = 2;
 
 
+        var plane_texture = THREE.ImageUtils.loadTexture('img/square.png');
+        
+        var plane_mesh = new THREE.Mesh(
+            new THREE.PlaneGeometry(10, 10, 50, 50),
+            new THREE.MeshBasicMaterial({
+                // color: 0x00ff00,
+                map: plane_texture,
+                side: THREE.DoubleSide
+            }));
 
+        plane_mesh.rotation.x = -Math.PI / 2;
+
+        // cylinder_mesh.rotation.x = Math.PI / 6;
+        // cylinder_mesh.rotation.y = Math.PI / 4;
+        group.add(cylinder_mesh);
+        group.add(plane_mesh);
+        root.add(group);
+        scene.add(root);
 
 
         return scene;
@@ -74,20 +101,9 @@ var Texmap = (function(){
         var textureUrl = textureCanvas.toDataURL();
         texture = THREE.ImageUtils.loadTexture(textureUrl);;
 
-        var material = new THREE.MeshBasicMaterial({
-            map: texture
+        cylinder_mesh.material = new THREE.MeshBasicMaterial({
+            map: texture,
         });
-
-
-        var geometry = new THREE.BoxGeometry(2, 2, 2);
-        var cube = new THREE.Mesh(geometry, material);
-        cube.rotation.x = Math.PI / 6;
-        cube.rotation.y = Math.PI / 4;
-
-        // cube.position.z = -6;
-        group.add(cube);
-        root.add(group);
-        scene.add(root);
     }
 
     function initEventListener(canvas){
@@ -115,7 +131,7 @@ var Texmap = (function(){
 
                 reader.readAsDataURL(files[0]);
             }
-        })
+        });
     }
 
     function init(){
