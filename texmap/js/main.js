@@ -28,7 +28,7 @@ var Texmap = (function(){
         currentTime = now;
         var fract = deltat / duration;
         var angle = Math.PI * 2 * fract;
-        group.rotation.y += angle;
+        group.rotation.y += angle / 8;
     }
 
     function run(){
@@ -70,10 +70,12 @@ var Texmap = (function(){
                 color: 0x00ffff,
                 wireframe: true,
             })); 
-        cylinder_mesh.position.y = 2;
+        cylinder_mesh.position.y = 2.1;
 
 
-        var plane_texture = THREE.ImageUtils.loadTexture('img/square.png');
+        var plane_texture = THREE.ImageUtils.loadTexture('img/marble_floor.jpg');
+        plane_texture.wrapS = plane_texture.wrapT = THREE.RepeatWrapping;
+        plane_texture.repeat.set(4,4);
         
         var plane_mesh = new THREE.Mesh(
             new THREE.PlaneGeometry(10, 10, 50, 50),
