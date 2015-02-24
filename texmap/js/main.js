@@ -67,7 +67,7 @@ var Texmap = (function(){
         cylinder_geometry = new THREE.CylinderGeometry(1,1,4,32,1,true);
         cylinder_mesh = new THREE.Mesh(cylinder_geometry, 
             new THREE.MeshBasicMaterial({
-                color: 0x00ffff,
+                color: 0x00ff00,
                 wireframe: true,
             })); 
         cylinder_mesh.position.y = 2.1;
@@ -100,13 +100,17 @@ var Texmap = (function(){
 
     function mapTextureToObject(){
 
+        if (!cylinder_mesh.material.map){
+            cylinder_mesh.material = new THREE.MeshBasicMaterial({
+                side: THREE.DoubleSide,
+            });
+        }
+
         var textureUrl = textureCanvas.toDataURL();
         texture = THREE.ImageUtils.loadTexture(textureUrl);;
 
-        cylinder_mesh.material = new THREE.MeshBasicMaterial({
-            map: texture,
-            side: THREE.DoubleSide
-        });
+        cylinder_mesh.material.map = texture;
+        cylinder_mesh.material.needUpdate = true;
     }
 
     function initEventListener(canvas){
