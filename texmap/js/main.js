@@ -17,7 +17,10 @@ var Texmap = (function(){
     var cylinder_geometry = null,
         cylinder_mesh = null;
 
-    var textureCanvas = null;
+    var textureCanvas = null,
+        bumpmapCanvas = null,
+        textureContext = null,
+        bumpmapContext = null;
 
 
     function animate(){
@@ -50,9 +53,9 @@ var Texmap = (function(){
 
 
 
-        // var light = new THREE.DirectionalLight(0xffffff, 1.5);
-        // light.position.set(0, 0, 1);
-        // root.add(light);
+        var light = new THREE.DirectionalLight(0xffffff, 1.5);
+        light.position.set(0, 1, 10);
+        root.add(light);
 
         var ambientLight = new THREE.AmbientLight ( 0xdddddd );
         root.add(ambientLight);
@@ -64,7 +67,7 @@ var Texmap = (function(){
 
 
         
-        cylinder_geometry = new THREE.CylinderGeometry(1,1,4,32,1,true);
+        cylinder_geometry = new THREE.CylinderGeometry(2,2,5,64,1,true);
         cylinder_mesh = new THREE.Mesh(cylinder_geometry, 
             new THREE.MeshPhongMaterial({
                 color: 0x00ff00,
@@ -80,15 +83,12 @@ var Texmap = (function(){
         var plane_mesh = new THREE.Mesh(
             new THREE.PlaneGeometry(10, 10, 50, 50),
             new THREE.MeshPhongMaterial({
-                // color: 0x00ff00,
                 map: plane_texture,
                 side: THREE.DoubleSide
             }));
 
         plane_mesh.rotation.x = -Math.PI / 2;
 
-        // cylinder_mesh.rotation.x = Math.PI / 6;
-        // cylinder_mesh.rotation.y = Math.PI / 4;
         group.add(cylinder_mesh);
         group.add(plane_mesh);
         root.add(group);
@@ -107,9 +107,14 @@ var Texmap = (function(){
         }
 
         var textureUrl = textureCanvas.toDataURL();
-        texture = THREE.ImageUtils.loadTexture(textureUrl);;
+        texture = THREE.ImageUtils.loadTexture(textureUrl);
+
+
+        var bmapTextureUrl = bumpmapCanvas.toDataURL();
+        var bmapTexture = THREE.ImageUtils.loadTexture(bmapTextureUrl);
 
         cylinder_mesh.material.map = texture;
+        cylinder_mesh.material.bumpMap = bmapTexture;
         cylinder_mesh.material.needUpdate = true;
     }
 
@@ -130,10 +135,13 @@ var Texmap = (function(){
             if (files && files[0]){
                 var reader = new FileReader();
                 reader.onload = function(evt){
-                    var textureContext = textureCanvas.getContext('2d');
+                    
                     var img = new Image();
                     img.src = evt.target.result;
                     textureContext.drawImage(img, 0, 0, 100, 100);
+                    var img_data = textureContext.getImageData(0, 0, textureCanvas.width, textureCanvas.height);
+                    Utils.grayscale(img_data);
+                    bumpmapContext.putImageData(img_data, 0, 0);
                 };
 
                 reader.readAsDataURL(files[0]);
@@ -149,6 +157,12 @@ var Texmap = (function(){
         textureCanvas = document.getElementById('texture-canvas');
         textureCanvas.width = TEXTURE_WIDTH;
         textureCanvas.height = TEXTURE_HEIGHT;
+        textureContext = textureCanvas.getContext('2d');
+
+        bumpmapCanvas = document.getElementById('bumpmap-canvas');
+        bumpmapCanvas.width = TEXTURE_WIDTH;
+        bumpmapCanvas.height = TEXTURE_HEIGHT;
+        bumpmapContext = bumpmapCanvas.getContext('2d');
 
         initScene(canvas);
         initEventListener(canvas);
@@ -163,6 +177,21 @@ var Texmap = (function(){
         init: init,
     };
 })();
+
+
+var Utils = {
+    grayscale: function(pixels){
+        var data = pixels.data;
+        var r,g,b, luminance;
+        for (var i = 0; i < data.length; i+=4){
+            r = data[i];
+            g = data[i+1];
+            b = data[i+2];
+            luminance = 0.2126 * r + 0.7152 * g + 0.0722 * b; // relative lumninance
+            data[i] = data[i+1] = data[i+2] = luminance;
+        }
+    }
+}
 
 
 document.addEventListener("DOMContentLoaded", function(){
