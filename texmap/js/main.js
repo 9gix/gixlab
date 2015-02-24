@@ -67,7 +67,7 @@ var Texmap = (function(){
 
 
         
-        cylinder_geometry = new THREE.CylinderGeometry(2,2,5,64,1,true);
+        cylinder_geometry = new THREE.CylinderGeometry(1.5,1.5,6,64,1,true);
         cylinder_mesh = new THREE.Mesh(cylinder_geometry, 
             new THREE.MeshPhongMaterial({
                 color: 0x00ff00,
