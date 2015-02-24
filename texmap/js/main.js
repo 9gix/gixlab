@@ -18,17 +18,13 @@ var Texmap = (function(){
         cylinder_mesh = null;
 
     var textureCanvas = null;
-    var duration = 5000;
-    var currentTime = Date.now();
 
 
     function animate(){
-        var now = Date.now();
-        var deltat = now - currentTime;
-        currentTime = now;
-        var fract = deltat / duration;
-        var angle = Math.PI * 2 * fract;
-        group.rotation.y += angle / 8;
+        var rotation_tween = new TWEEN.Tween(group.rotation)
+            .to({y: Math.PI * 2}, 60000)
+            .repeat(Infinity)
+            .start();
     }
 
     function run(){
@@ -36,7 +32,8 @@ var Texmap = (function(){
             run();
         });
         renderer.render(scene, camera);
-        animate();
+
+        TWEEN.update();
 
         orbitControls.update();
     }
@@ -154,7 +151,7 @@ var Texmap = (function(){
         initEventListener(canvas);
         initControl();
 
-
+        animate();
         run();
 
     }
