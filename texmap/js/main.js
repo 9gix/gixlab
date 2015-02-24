@@ -54,6 +54,9 @@ var Texmap = (function(){
         // light.position.set(0, 0, 1);
         // root.add(light);
 
+        var ambientLight = new THREE.AmbientLight ( 0xdddddd );
+        root.add(ambientLight);
+
         
         camera = new THREE.PerspectiveCamera(45, canvas.width / canvas.height, 1, 4000);
         camera.position.set(0,10,10);
@@ -63,7 +66,7 @@ var Texmap = (function(){
         
         cylinder_geometry = new THREE.CylinderGeometry(1,1,4,32,1,true);
         cylinder_mesh = new THREE.Mesh(cylinder_geometry, 
-            new THREE.MeshBasicMaterial({
+            new THREE.MeshPhongMaterial({
                 color: 0x00ff00,
                 wireframe: true,
             })); 
@@ -76,7 +79,7 @@ var Texmap = (function(){
         
         var plane_mesh = new THREE.Mesh(
             new THREE.PlaneGeometry(10, 10, 50, 50),
-            new THREE.MeshBasicMaterial({
+            new THREE.MeshPhongMaterial({
                 // color: 0x00ff00,
                 map: plane_texture,
                 side: THREE.DoubleSide
@@ -98,7 +101,7 @@ var Texmap = (function(){
     function mapTextureToObject(){
 
         if (!cylinder_mesh.material.map){
-            cylinder_mesh.material = new THREE.MeshBasicMaterial({
+            cylinder_mesh.material = new THREE.MeshPhongMaterial({
                 side: THREE.DoubleSide,
             });
         }
