@@ -1,0 +1,25 @@
+{
+    'Team A': [{
+        'start': '11/Jul/13 1:49 PM',
+        'end': '10/Oct/13 5:16 PM',
+        'issue': 'KEY-12678'
+    }, {
+        'start': '3/Oct/13 10:40 AM',
+        'end': '11/Nov/13 1:02 PM',
+        'issue': 'KEY-12678'
+    }],
+
+    'Team B': [{
+        'start': '5/Sep/13 3:35 PM',
+        'end': '08/Nov/13 3:35 PM',
+        'issue': 'KEY-12679'
+    }, {
+        'start': '19/Aug/13 5:05 PM',
+        'end': '10/Sep/13 5:16 PM',
+        'issue': 'KEY-12679'
+    }, {
+        'start': '09/Jul/13 9:15 AM',
+        'end': '29/Jul/13 9:15 AM',
+        'issue': 'KEY-12680'
+    }]
+}
